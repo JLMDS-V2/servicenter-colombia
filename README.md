@@ -1,4 +1,4 @@
-# Servicios del Hogar Colombia
+# ServiCenter Colombia
 
 Plataforma web para conectar usuarios con profesionales del hogar (electricistas, plomeros, cerrajeros, etc.) en Colombia.
 
@@ -26,7 +26,7 @@ Plataforma web para conectar usuarios con profesionales del hogar (electricistas
 
 ```bash
 git clone <tu-repo-url>
-cd servicios-hogar
+cd servicenter
 ```
 
 ### 2. Instalar dependencias
@@ -72,7 +72,7 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 ## Estructura del Proyecto
 
 ```
-servicios-hogar/
+servicenter/
 ├── src/
 │   ├── app/
 │   │   ├── auth/          # Página de login/registro

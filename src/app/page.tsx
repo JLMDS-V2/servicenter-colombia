@@ -50,7 +50,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Home className="w-8 h-8 text-white" />
-            <h1 className="text-2xl font-bold text-white">Servicios Hogar</h1>
+            <h1 className="text-2xl font-bold text-white">ServiCenter</h1>
           </div>
           {user ? (
             <div className="flex items-center gap-4">
@@ -142,7 +142,7 @@ export default function HomePage() {
       <footer className="liquid-glass mt-16">
         <div className="container mx-auto px-4 py-8 text-center">
           <p className="text-white/70">
-            © 2024 Servicios del Hogar Colombia. Todos los derechos reservados.
+            © 2024 ServiCenter Colombia. Todos los derechos reservados.
           </p>
         </div>
       </footer>
