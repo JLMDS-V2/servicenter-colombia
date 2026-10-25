@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Message, Conversation, User } from '@/types';
 import { Send, ArrowLeft, MessageCircle, Clock } from 'lucide-react';
 
-export default function ChatPage() {
+function ChatContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sellerId = searchParams.get('seller') || '';
@@ -258,5 +258,13 @@ export default function ChatPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div></div>}>
+      <ChatContent />
+    </Suspense>
   );
 }

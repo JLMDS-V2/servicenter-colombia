@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Seller, Review } from '@/types';
-import { Star, MessageCircle, WhatsApp, CheckCircle, Shield, ArrowLeft, MapPin } from 'lucide-react';
+import { Star, MessageCircle, Phone, CheckCircle, Shield, ArrowLeft, MapPin } from 'lucide-react';
 
-export default function SellersPage() {
+function SellersContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams.get('category') || '';
@@ -165,10 +165,10 @@ export default function SellersPage() {
                   </button>
                   {seller.preferred_contact !== 'chat' && seller.whatsapp && (
                     <button
-                      onClick={() => openWhatsApp(seller.whatsapp)}
+                      onClick={() => seller.whatsapp && openWhatsApp(seller.whatsapp)}
                       className="flex-1 glass px-4 py-2 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2"
                     >
-                      <WhatsApp className="w-4 h-4" />
+                      <Phone className="w-4 h-4" />
                       WhatsApp
                     </button>
                   )}
@@ -186,5 +186,13 @@ export default function SellersPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function SellersPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div></div>}>
+      <SellersContent />
+    </Suspense>
   );
 }
