@@ -29,18 +29,27 @@ function SellersContent() {
         .select('city')
         .eq('id', session.user.id)
         .single();
-      setUserCity(userData?.city || '');
+      setUserCity(userData?.city || searchParams.get('city') || '');
+    } else {
+      setUserCity(searchParams.get('city') || '');
     }
   };
 
   const fetchSellers = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('users')
         .select('*')
         .eq('role', 'seller')
         .contains('categories', [category]);
+
+      // Filtrar por ciudad si está seleccionada
+      if (userCity) {
+        query = query.eq('city', userCity);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setSellers(data || []);
@@ -51,11 +60,21 @@ function SellersContent() {
     }
   };
 
-  const openChat = (sellerId: string) => {
+  const openChat = async (sellerId: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      router.push(`/auth?redirect=/sellers?category=${category}&name=${encodeURIComponent(categoryName)}&city=${userCity}&message=${encodeURIComponent('Inicia sesión para contactar al vendedor')}`);
+      return;
+    }
     router.push(`/chat?seller=${sellerId}`);
   };
 
-  const openWhatsApp = (phone: string) => {
+  const openWhatsApp = async (phone: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      router.push(`/auth?redirect=/sellers?category=${category}&name=${encodeURIComponent(categoryName)}&city=${userCity}&message=${encodeURIComponent('Inicia sesión para contactar al vendedor')}`);
+      return;
+    }
     if (phone) {
       window.open(`https://wa.me/${phone}`, '_blank');
     }
@@ -76,35 +95,43 @@ function SellersContent() {
     <div className="min-h-screen">
       {/* Header */}
       <header className="liquid-glass sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center gap-4">
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center gap-3 sm:gap-4">
           <button
             onClick={() => router.push('/categories')}
             className="text-white hover:text-white/80 transition"
           >
-            <ArrowLeft className="w-6 h-6" />
+            <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
-          <h1 className="text-xl font-bold text-white">
+          <h1 className="text-lg sm:text-xl font-bold text-white truncate">
             {categoryName} en {userCity || 'Colombia'}
           </h1>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8 sm:py-12">
         {loading ? (
           <div className="flex justify-center items-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
           </div>
         ) : sellers.length === 0 ? (
-          <div className="liquid-glass rounded-2xl p-12 text-center">
-            <p className="text-white text-xl">
+          <div className="liquid-glass rounded-2xl p-8 sm:p-12 text-center">
+            <p className="text-white text-lg sm:text-xl">
               No hay vendedores disponibles en esta categoría aún.
             </p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {sellers.map((seller) => (
-              <div key={seller.id} className="liquid-glass rounded-2xl p-6">
+              <div key={seller.id} className="liquid-glass rounded-2xl p-5 sm:p-6 relative overflow-hidden">
+                <div className="absolute inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-10">
+                  <button
+                    onClick={() => router.push(`/auth?redirect=/sellers&message=${encodeURIComponent('Iniciar sesión para ver el perfil del vendedor')}`)}
+                    className="glass-strong px-4 py-2 rounded-lg text-white text-sm hover:bg-white/30 transition"
+                  >
+                    Iniciar sesión para ver perfil
+                  </button>
+                </div>
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -155,18 +182,18 @@ function SellersContent() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 relative z-20">
                   <button
                     onClick={() => openChat(seller.id)}
-                    className="flex-1 glass px-4 py-2 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2"
+                    className="flex-1 glass px-3 py-2 sm:px-4 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     <MessageCircle className="w-4 h-4" />
                     Chat
                   </button>
                   {seller.preferred_contact !== 'chat' && seller.whatsapp && (
                     <button
-                      onClick={() => seller.whatsapp && openWhatsApp(seller.whatsapp)}
-                      className="flex-1 glass px-4 py-2 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2"
+                      onClick={() => openWhatsApp(seller.whatsapp)}
+                      className="flex-1 glass px-3 py-2 sm:px-4 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
                       <Phone className="w-4 h-4" />
                       WhatsApp
