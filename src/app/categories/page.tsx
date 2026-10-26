@@ -75,13 +75,13 @@ export default function CategoriesPage() {
                 <input
                   type="text"
                   placeholder="Buscar ciudad..."
-                  value={userCity}
+                  value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
-                    setUserCity(e.target.value);
                     setShowCityDropdown(true);
                   }}
                   onFocus={() => setShowCityDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowCityDropdown(false), 200)}
                   className="bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm w-32 sm:w-40 md:w-48 placeholder-white/50"
                 />
                 {showCityDropdown && searchQuery && (
