@@ -147,7 +147,7 @@ export default function CategoriesPage() {
             ) : userCity ? (
               `Mostrando servicios en ${userCity}`
             ) : (
-              'Explora todas las categorías - Filtra por ciudad'
+              'Mostrando servicios en Colombia'
             )}
           </p>
         </div>

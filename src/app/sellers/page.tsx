@@ -64,11 +64,15 @@ function SellersContent() {
       // Si no hay ciudad seleccionada, mostrar todos los vendedores de la categoría
       if (userCity && userCity.trim() !== '') {
         query = query.eq('city', userCity);
+        console.log('Filtrando por ciudad:', userCity);
+      } else {
+        console.log('Mostrando todos los vendedores de la categoría:', category);
       }
 
       const { data, error } = await query;
 
       if (error) throw error;
+      console.log('Vendedores encontrados:', data?.length);
       setSellers(data || []);
     } catch (err) {
       console.error('Error fetching sellers:', err);
