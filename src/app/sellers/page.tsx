@@ -23,13 +23,6 @@ function SellersContent() {
     }
   }, [category, userCity]);
 
-  // Refetch sellers when userCity changes
-  useEffect(() => {
-    if (category) {
-      fetchSellers();
-    }
-  }, [userCity]);
-
   const fetchSellers = async () => {
     setLoading(true);
     try {
@@ -81,14 +74,18 @@ function SellersContent() {
   };
 
   const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }).map((_, i) => (
-      <Star
-        key={i}
-        className={`w-4 h-4 ${
-          i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'
-        }`}
-      />
-    ));
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(
+        <Star
+          key={i}
+          className={`w-4 h-4 ${
+            i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'
+          }`}
+        />
+      );
+    }
+    return stars;
   };
 
   return (
@@ -124,19 +121,8 @@ function SellersContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {sellers.map((seller) => (
               <div key={seller.id} className="liquid-glass rounded-2xl p-4 sm:p-6 relative overflow-hidden">
-                {/* Blur overlay */}
-                <div className="absolute inset-0 backdrop-blur-xl bg-black/70 flex items-center justify-center z-10">
-                  <button
-                    onClick={() => router.push(`/auth?redirect=/sellers?category=${category}&name=${encodeURIComponent(categoryName)}&city=${userCity}&message=${encodeURIComponent('Inicia sesión para ver el perfil completo')}`)}
-                    className="glass-strong px-4 py-2 rounded-lg text-white text-sm hover:bg-white/30 transition"
-                  >
-                    Inicia sesión para ver perfil
-                  </button>
-                </div>
-                {/* Content with partial blur */}
-                <div className="opacity-25">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-3 sm:mb-4">
+                {/* Header - visible without blur */}
+                <div className="flex items-start justify-between mb-3 sm:mb-4 relative z-20">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full glass-strong flex items-center justify-center flex-shrink-0">
                       <span className="text-xl sm:text-2xl">👷</span>
@@ -159,8 +145,8 @@ function SellersContent() {
                   )}
                 </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                {/* Rating - visible without blur */}
+                <div className="flex items-center gap-2 mb-3 sm:mb-4 relative z-20">
                   <div className="flex">
                     {renderStars(Math.round(seller.rating || 0))}
                   </div>
@@ -169,23 +155,26 @@ function SellersContent() {
                   </span>
                 </div>
 
-                {/* Description */}
+                {/* Description - with blur */}
                 {seller.description && (
-                  <p className="text-white/80 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
-                    {seller.description}
-                  </p>
+                  <div className="relative mb-3 sm:mb-4">
+                    <div className="absolute inset-0 backdrop-blur-xl bg-black/70 z-10 rounded"></div>
+                    <p className="text-white/80 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 opacity-25">
+                      {seller.description}
+                    </p>
+                  </div>
                 )}
 
-                {/* Contact Info */}
-                <div className="text-xs sm:text-sm text-white/60 mb-3 sm:mb-4">
+                {/* Contact Info - visible without blur */}
+                <div className="text-xs sm:text-sm text-white/60 mb-3 sm:mb-4 relative z-20">
                   <span className="font-semibold">Contacto: </span>
                   {seller.preferred_contact === 'whatsapp' && 'WhatsApp'}
                   {seller.preferred_contact === 'chat' && 'Chat interno'}
                   {seller.preferred_contact === 'both' && 'WhatsApp y Chat'}
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex gap-2 flex-col sm:flex-row">
+                {/* Action Buttons - visible without blur */}
+                <div className="flex gap-2 flex-col sm:flex-row relative z-20">
                   <button
                     onClick={() => openChat(seller.id)}
                     className="flex-1 glass px-3 py-2 sm:px-4 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2 text-xs sm:text-sm sm:text-base"
@@ -202,7 +191,6 @@ function SellersContent() {
                       WhatsApp
                     </button>
                   )}
-                </div>
                 </div>
               </div>
             ))}
