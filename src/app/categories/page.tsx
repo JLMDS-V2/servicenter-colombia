@@ -59,7 +59,7 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="liquid-glass sticky top-0 z-50">
+      <header className="liquid-glass sticky top-0 z-[100]">
         <div className="container mx-auto px-4 py-3 sm:py-4 flex justify-between items-center flex-wrap gap-2">
           <button
             onClick={() => router.push('/')}
