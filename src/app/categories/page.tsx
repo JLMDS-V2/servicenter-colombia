@@ -68,41 +68,21 @@ export default function CategoriesPage() {
             <Home className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="font-semibold text-sm sm:text-base">ServiCenter</span>
           </button>
-          <div className="flex items-center gap-2 sm:gap-4 relative">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-1 sm:gap-2 text-white">
               <MapPin className="w-4 h-4" />
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Buscar ciudad..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setShowCityDropdown(true);
-                  }}
-                  onFocus={() => setShowCityDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowCityDropdown(false), 200)}
-                  className="bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm w-32 sm:w-40 md:w-48 placeholder-white/50"
-                />
-                {showCityDropdown && searchQuery && (
-                  <div className="absolute top-full left-0 mt-2 w-64 sm:w-80 max-h-96 overflow-y-auto glass rounded-xl z-[9999]">
-                    {filteredCities.length === 0 ? (
-                      <div className="p-4 text-white/60 text-sm">No se encontraron ciudades</div>
-                    ) : (
-                      filteredCities.map((city) => (
-                        <button
-                          key={city.id}
-                          onClick={() => handleLocationChange(city.name)}
-                          className="w-full text-left px-4 py-2 text-white hover:bg-white/20 transition text-sm border-b border-white/10 last:border-0"
-                        >
-                          <div className="font-medium">{city.name}</div>
-                          <div className="text-white/60 text-xs">{city.department}</div>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                )}
-              </div>
+              <input
+                type="text"
+                placeholder="Buscar ciudad..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowCityDropdown(true);
+                }}
+                onFocus={() => setShowCityDropdown(true)}
+                onBlur={() => setTimeout(() => setShowCityDropdown(false), 200)}
+                className="bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm w-32 sm:w-40 md:w-48 placeholder-white/50"
+              />
             </div>
             {user ? (
               <button
@@ -122,6 +102,26 @@ export default function CategoriesPage() {
           </div>
         </div>
       </header>
+
+      {/* City Dropdown - positioned outside header to avoid clipping */}
+      {showCityDropdown && searchQuery && (
+        <div className="fixed top-16 right-4 w-64 sm:w-80 max-h-96 overflow-y-auto glass rounded-xl z-[9999]">
+          {filteredCities.length === 0 ? (
+            <div className="p-4 text-white/60 text-sm">No se encontraron ciudades</div>
+          ) : (
+            filteredCities.map((city) => (
+              <button
+                key={city.id}
+                onClick={() => handleLocationChange(city.name)}
+                className="w-full text-left px-4 py-2 text-white hover:bg-white/20 transition text-sm border-b border-white/10 last:border-0"
+              >
+                <div className="font-medium">{city.name}</div>
+                <div className="text-white/60 text-xs">{city.department}</div>
+              </button>
+            ))
+          )}
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 sm:py-12">
