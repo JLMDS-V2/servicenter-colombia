@@ -54,7 +54,7 @@ export default function CategoriesPage() {
   const filteredCities = citiesColombia.filter(city =>
     city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     city.department.toLowerCase().includes(searchQuery.toLowerCase())
-  ).slice(0, 50);
+  ).slice(0, 30);
 
   return (
     <div className="min-h-screen">
