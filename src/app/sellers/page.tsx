@@ -17,9 +17,14 @@ function SellersContent() {
   const [userCity, setUserCity] = useState('');
 
   useEffect(() => {
-    fetchSellers();
     fetchUserCity();
-  }, [category]);
+  }, []);
+
+  useEffect(() => {
+    if (category) {
+      fetchSellers();
+    }
+  }, [category, userCity]);
 
   const fetchUserCity = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -39,6 +44,13 @@ function SellersContent() {
     }
   };
 
+  // Refetch sellers when userCity changes
+  useEffect(() => {
+    if (category) {
+      fetchSellers();
+    }
+  }, [userCity]);
+
   const fetchSellers = async () => {
     setLoading(true);
     try {
@@ -48,7 +60,7 @@ function SellersContent() {
         .eq('role', 'seller')
         .contains('categories', [category]);
 
-      // Filtrar por ciudad solo si está seleccionada
+      // Filtrar por ciudad exactamente si está seleccionada
       // Si no hay ciudad seleccionada, mostrar todos los vendedores de la categoría
       if (userCity && userCity.trim() !== '') {
         query = query.eq('city', userCity);

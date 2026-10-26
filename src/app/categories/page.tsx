@@ -13,6 +13,7 @@ export default function CategoriesPage() {
   const [userCity, setUserCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -46,8 +47,10 @@ export default function CategoriesPage() {
   };
 
   const handleLocationChange = async (newCity: string) => {
+    setLocationLoading(true);
     setUserCity(newCity);
     localStorage.setItem('selectedCity', newCity);
+    setTimeout(() => setLocationLoading(false), 500);
     setShowCityDropdown(false);
     if (user) {
       await supabase
@@ -136,7 +139,16 @@ export default function CategoriesPage() {
             Categorías de Servicios
           </h1>
           <p className="text-lg sm:text-xl text-white/70 px-2">
-            {userCity ? `Mostrando servicios en ${userCity}` : 'Explora todas las categorías - Filtra por ciudad'}
+            {locationLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="animate-spin">⏳</span>
+                Cargando servicios...
+              </span>
+            ) : userCity ? (
+              `Mostrando servicios en ${userCity}`
+            ) : (
+              'Explora todas las categorías - Filtra por ciudad'
+            )}
           </p>
         </div>
 
