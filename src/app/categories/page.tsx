@@ -85,7 +85,7 @@ export default function CategoriesPage() {
                   className="bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm w-32 sm:w-40 md:w-48 placeholder-white/50"
                 />
                 {showCityDropdown && searchQuery && (
-                  <div className="absolute top-full left-0 mt-2 w-64 sm:w-80 max-h-96 overflow-y-auto glass rounded-xl z-50">
+                  <div className="absolute top-full left-0 mt-2 w-64 sm:w-80 max-h-96 overflow-y-auto glass rounded-xl z-[100]">
                     {filteredCities.length === 0 ? (
                       <div className="p-4 text-white/60 text-sm">No se encontraron ciudades</div>
                     ) : (
