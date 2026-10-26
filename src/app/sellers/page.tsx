@@ -123,58 +123,50 @@ function SellersContent() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {sellers.map((seller) => (
-              <div key={seller.id} className="liquid-glass rounded-2xl p-5 sm:p-6 relative overflow-hidden">
-                <div className="absolute inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-10">
-                  <button
-                    onClick={() => router.push(`/auth?redirect=/sellers&message=${encodeURIComponent('Iniciar sesión para ver el perfil del vendedor')}`)}
-                    className="glass-strong px-4 py-2 rounded-lg text-white text-sm hover:bg-white/30 transition"
-                  >
-                    Iniciar sesión para ver perfil
-                  </button>
-                </div>
+              <div key={seller.id} className="liquid-glass rounded-2xl p-4 sm:p-6">
                 {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full glass-strong flex items-center justify-center">
-                      <span className="text-2xl">👷</span>
+                <div className="flex items-start justify-between mb-3 sm:mb-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full glass-strong flex items-center justify-center flex-shrink-0">
+                      <span className="text-xl sm:text-2xl">👷</span>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">
+                    <div className="min-w-0">
+                      <h3 className="text-base sm:text-lg font-semibold text-white truncate">
                         {seller.full_name || 'Profesional'}
                       </h3>
-                      <div className="flex items-center gap-1 text-white/70 text-sm">
+                      <div className="flex items-center gap-1 text-white/70 text-xs sm:text-sm">
                         <MapPin className="w-3 h-3" />
-                        {seller.city}
+                        <span className="truncate">{seller.city}</span>
                       </div>
                     </div>
                   </div>
                   {seller.is_verified && (
-                    <div className="flex items-center gap-1 text-green-400" title="Verificado">
-                      <CheckCircle className="w-5 h-5" />
-                      <Shield className="w-4 h-4" />
+                    <div className="flex items-center gap-1 text-green-400 flex-shrink-0" title="Verificado">
+                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
                     </div>
                   )}
                 </div>
 
                 {/* Rating */}
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
                   <div className="flex">
                     {renderStars(Math.round(seller.rating || 0))}
                   </div>
-                  <span className="text-white/70 text-sm">
+                  <span className="text-white/70 text-xs sm:text-sm">
                     ({seller.review_count || 0} reviews)
                   </span>
                 </div>
 
                 {/* Description */}
                 {seller.description && (
-                  <p className="text-white/80 text-sm mb-4 line-clamp-3">
+                  <p className="text-white/80 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
                     {seller.description}
                   </p>
                 )}
 
                 {/* Contact Info */}
-                <div className="text-sm text-white/60 mb-4">
+                <div className="text-xs sm:text-sm text-white/60 mb-3 sm:mb-4">
                   <span className="font-semibold">Contacto: </span>
                   {seller.preferred_contact === 'whatsapp' && 'WhatsApp'}
                   {seller.preferred_contact === 'chat' && 'Chat interno'}
@@ -182,18 +174,18 @@ function SellersContent() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 relative z-20">
+                <div className="flex gap-2 flex-col sm:flex-row">
                   <button
                     onClick={() => openChat(seller.id)}
-                    className="flex-1 glass px-3 py-2 sm:px-4 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2 text-sm sm:text-base"
+                    className="flex-1 glass px-3 py-2 sm:px-4 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2 text-xs sm:text-sm sm:text-base"
                   >
                     <MessageCircle className="w-4 h-4" />
                     Chat
                   </button>
                   {seller.preferred_contact !== 'chat' && seller.whatsapp && (
                     <button
-                      onClick={() => openWhatsApp(seller.whatsapp)}
-                      className="flex-1 glass px-3 py-2 sm:px-4 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2 text-sm sm:text-base"
+                      onClick={() => seller.whatsapp && openWhatsApp(seller.whatsapp)}
+                      className="flex-1 glass px-3 py-2 sm:px-4 rounded-lg text-white hover:bg-white/20 transition flex items-center justify-center gap-2 text-xs sm:text-sm sm:text-base"
                     >
                       <Phone className="w-4 h-4" />
                       WhatsApp
