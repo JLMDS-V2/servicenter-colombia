@@ -77,6 +77,10 @@ export default function ProfilePage() {
       if (error) throw error;
 
       alert('Perfil actualizado exitosamente');
+      // Si el usuario se acaba de registrar como vendedor, redirigir a la página de categorías
+      if (user.role === 'seller' && selectedCategories.length > 0) {
+        router.push('/categories');
+      }
     } catch (err) {
       console.error('Error saving profile:', err);
       alert('Error al guardar el perfil');
