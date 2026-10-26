@@ -42,6 +42,7 @@ function ChatContent() {
   const fetchConversations = async () => {
     if (!currentUser) return;
 
+    // Fetch conversations where user is the user or the seller
     const { data, error } = await supabase
       .from('conversations')
       .select('*')
@@ -53,22 +54,29 @@ function ChatContent() {
   };
 
   const startConversation = async (targetSellerId: string) => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      router.push('/auth');
+      return;
+    }
 
     // Check if conversation already exists
-    const { data: existing } = await supabase
+    const { data: existing, error: checkError } = await supabase
       .from('conversations')
       .select('*')
       .eq('user_id', currentUser.id)
       .eq('seller_id', targetSellerId)
-      .single();
+      .maybeSingle();
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking conversation:', checkError);
+    }
 
     if (existing) {
       setSelectedConversation(existing.id);
       fetchMessages(existing.id);
     } else {
       // Create new conversation
-      const { data: newConv, error } = await supabase
+      const { data: newConv, error: insertError } = await supabase
         .from('conversations')
         .insert({
           user_id: currentUser.id,
@@ -78,8 +86,9 @@ function ChatContent() {
         .select()
         .single();
 
-      if (error) console.error('Error creating conversation:', error);
-      else {
+      if (insertError) {
+        console.error('Error creating conversation:', insertError);
+      } else {
         setSelectedConversation(newConv.id);
         fetchMessages(newConv.id);
       }
