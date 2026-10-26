@@ -95,7 +95,7 @@ export default function HomePage() {
       {/* CTA para Vendedores */}
       <section className="container mx-auto px-4 py-6 sm:py-8">
         <div className="liquid-glass rounded-2xl p-6 sm:p-8 text-center">
-          <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">¿Ofreces servicios del hogar?</h3>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">¿Ofreces servicios profesionales?</h3>
           <p className="text-white/70 mb-4 text-sm sm:text-base">Únete como profesional y llega a más clientes en Colombia</p>
           <button
             onClick={() => router.push('/auth?redirect=/profile&message=' + encodeURIComponent('Iniciar sesión para registrar tu cuenta de vendedor'))}

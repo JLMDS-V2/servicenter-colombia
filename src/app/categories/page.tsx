@@ -54,7 +54,7 @@ export default function CategoriesPage() {
   const filteredCities = citiesColombia.filter(city =>
     city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     city.department.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ).slice(0, 50);
 
   return (
     <div className="min-h-screen">
@@ -85,17 +85,18 @@ export default function CategoriesPage() {
                   className="bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm w-32 sm:w-40 md:w-48 placeholder-white/50"
                 />
                 {showCityDropdown && searchQuery && (
-                  <div className="absolute top-full left-0 mt-2 w-64 sm:w-80 max-h-80 overflow-y-auto glass rounded-xl z-50">
+                  <div className="absolute top-full left-0 mt-2 w-64 sm:w-80 max-h-96 overflow-y-auto glass rounded-xl z-50">
                     {filteredCities.length === 0 ? (
                       <div className="p-4 text-white/60 text-sm">No se encontraron ciudades</div>
                     ) : (
-                      filteredCities.slice(0, 20).map((city) => (
+                      filteredCities.map((city) => (
                         <button
                           key={city.id}
                           onClick={() => handleLocationChange(city.name)}
-                          className="w-full text-left px-4 py-2 text-white hover:bg-white/20 transition text-sm"
+                          className="w-full text-left px-4 py-2 text-white hover:bg-white/20 transition text-sm border-b border-white/10 last:border-0"
                         >
-                          {city.name}, {city.department}
+                          <div className="font-medium">{city.name}</div>
+                          <div className="text-white/60 text-xs">{city.department}</div>
                         </button>
                       ))
                     )}

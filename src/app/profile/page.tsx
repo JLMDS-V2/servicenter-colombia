@@ -223,7 +223,7 @@ export default function ProfilePage() {
                         onChange={(e) => setDescription(e.target.value)}
                         rows={4}
                         className="w-full px-4 py-3 rounded-xl glass text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-                        placeholder="Describe tus servicios, experiencia, horarios..."
+                        placeholder="Describe tu experiencia, habilidades, horarios..."
                       />
                     </div>
 
@@ -257,7 +257,7 @@ export default function ProfilePage() {
 
                     {/* Categories */}
                     <div className="mb-6">
-                      <label className="block text-white mb-2">Categorías de Servicios</label>
+                      <label className="block text-white mb-2">Categorías de Profesión</label>
                       <div className="grid grid-cols-2 gap-3">
                         {categories.map((cat) => (
                           <button

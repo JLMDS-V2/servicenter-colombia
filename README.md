@@ -1,6 +1,6 @@
 # ServiCenter Colombia
 
-Plataforma web para conectar usuarios con profesionales del hogar (electricistas, plomeros, cerrajeros, etc.) en Colombia.
+Plataforma web para conectar usuarios con profesionales (electricistas, plomeros, cerrajeros, etc.) en Colombia.
 
 ## Características
 
@@ -102,7 +102,7 @@ servicenter/
 - Elección de rol (usuario o vendedor)
 
 ### Categorías
-- 12 categorías de servicios del hogar
+- 12 categorías de profesionales del hogar
 - Filtros por ubicación
 - Visualización de vendedores por categoría
 
@@ -119,7 +119,7 @@ servicenter/
 
 ### Perfil
 - Edición de información personal
-- Para vendedores: configuración de servicios y contacto
+- Para vendedores: configuración de profesionales y contacto
 - Cambio de ubicación
 
 ## Despliegue

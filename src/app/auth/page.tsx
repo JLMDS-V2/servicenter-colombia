@@ -68,7 +68,7 @@ function AuthContent() {
             {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
           </h1>
           <p className="text-white/70">
-            {searchParams.get('message') || (isLogin ? 'Bienvenido de nuevo' : 'Únete a Servicios del Hogar')}
+            {searchParams.get('message') || (isLogin ? 'Bienvenido de nuevo' : 'Únete a ServiCenter')}
           </p>
         </div>
 

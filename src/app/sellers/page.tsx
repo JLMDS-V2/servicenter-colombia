@@ -10,7 +10,7 @@ function SellersContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams.get('category') || '';
-  const categoryName = searchParams.get('name') || 'Servicios';
+  const categoryName = searchParams.get('name') || 'Categoría';
 
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,8 +44,9 @@ function SellersContent() {
         .eq('role', 'seller')
         .contains('categories', [category]);
 
-      // Filtrar por ciudad si está seleccionada
-      if (userCity) {
+      // Filtrar por ciudad solo si está seleccionada
+      // Si no hay ciudad seleccionada, mostrar todos los vendedores de la categoría
+      if (userCity && userCity.trim() !== '') {
         query = query.eq('city', userCity);
       }
 
@@ -125,7 +126,7 @@ function SellersContent() {
             {sellers.map((seller) => (
               <div key={seller.id} className="liquid-glass rounded-2xl p-4 sm:p-6 relative overflow-hidden">
                 {/* Blur overlay */}
-                <div className="absolute inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-10">
+                <div className="absolute inset-0 backdrop-blur-xl bg-black/70 flex items-center justify-center z-10">
                   <button
                     onClick={() => router.push(`/auth?redirect=/sellers?category=${category}&name=${encodeURIComponent(categoryName)}&city=${userCity}&message=${encodeURIComponent('Inicia sesión para ver el perfil completo')}`)}
                     className="glass-strong px-4 py-2 rounded-lg text-white text-sm hover:bg-white/30 transition"
@@ -134,7 +135,7 @@ function SellersContent() {
                   </button>
                 </div>
                 {/* Content with partial blur */}
-                <div className="opacity-40">
+                <div className="opacity-25">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3 sm:mb-4">
                   <div className="flex items-center gap-2 sm:gap-3">
