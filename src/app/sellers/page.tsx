@@ -99,6 +99,7 @@ function SellersContent() {
           >
             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
+          <img src="/icon.png" alt="ServiCenter" className="w-5 h-5 sm:w-6 sm:h-6" />
           <h1 className="text-lg sm:text-xl font-bold text-white truncate">
             {categoryName} en {userCity || 'Colombia'}
           </h1>
