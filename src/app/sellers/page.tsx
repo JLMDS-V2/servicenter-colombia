@@ -123,7 +123,18 @@ function SellersContent() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {sellers.map((seller) => (
-              <div key={seller.id} className="liquid-glass rounded-2xl p-4 sm:p-6">
+              <div key={seller.id} className="liquid-glass rounded-2xl p-4 sm:p-6 relative overflow-hidden">
+                {/* Blur overlay */}
+                <div className="absolute inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-10">
+                  <button
+                    onClick={() => router.push(`/auth?redirect=/sellers?category=${category}&name=${encodeURIComponent(categoryName)}&city=${userCity}&message=${encodeURIComponent('Inicia sesión para ver el perfil completo')}`)}
+                    className="glass-strong px-4 py-2 rounded-lg text-white text-sm hover:bg-white/30 transition"
+                  >
+                    Inicia sesión para ver perfil
+                  </button>
+                </div>
+                {/* Content with partial blur */}
+                <div className="opacity-40">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3 sm:mb-4">
                   <div className="flex items-center gap-2 sm:gap-3">
@@ -191,6 +202,7 @@ function SellersContent() {
                       WhatsApp
                     </button>
                   )}
+                </div>
                 </div>
               </div>
             ))}

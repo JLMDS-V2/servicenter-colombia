@@ -3,14 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { categories } from '@/lib/data';
+import { categories, citiesColombia } from '@/lib/data';
 import { User } from '@/types';
-import { Home, MapPin, LogOut } from 'lucide-react';
+import { Home, MapPin, LogOut, Search } from 'lucide-react';
 
 export default function CategoriesPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [userCity, setUserCity] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -40,6 +42,7 @@ export default function CategoriesPage() {
 
   const handleLocationChange = async (newCity: string) => {
     setUserCity(newCity);
+    setShowCityDropdown(false);
     if (user) {
       await supabase
         .from('users')
@@ -47,6 +50,11 @@ export default function CategoriesPage() {
         .eq('id', user.id);
     }
   };
+
+  const filteredCities = citiesColombia.filter(city =>
+    city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    city.department.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen">
@@ -60,25 +68,40 @@ export default function CategoriesPage() {
             <Home className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="font-semibold text-sm sm:text-base">ServiCenter</span>
           </button>
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 relative">
             <div className="flex items-center gap-1 sm:gap-2 text-white">
               <MapPin className="w-4 h-4" />
-              <select
-                value={userCity}
-                onChange={(e) => handleLocationChange(e.target.value)}
-                className="bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm"
-              >
-                <option value="" className="bg-gray-800">Todas las ciudades</option>
-                <option value="Bogotá" className="bg-gray-800">Bogotá</option>
-                <option value="Medellín" className="bg-gray-800">Medellín</option>
-                <option value="Cali" className="bg-gray-800">Cali</option>
-                <option value="Barranquilla" className="bg-gray-800">Barranquilla</option>
-                <option value="Cartagena" className="bg-gray-800">Cartagena</option>
-                <option value="Bucaramanga" className="bg-gray-800">Bucaramanga</option>
-                <option value="Pereira" className="bg-gray-800">Pereira</option>
-                <option value="Manizales" className="bg-gray-800">Manizales</option>
-                <option value="Cúcuta" className="bg-gray-800">Cúcuta</option>
-              </select>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Buscar ciudad..."
+                  value={userCity}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setUserCity(e.target.value);
+                    setShowCityDropdown(true);
+                  }}
+                  onFocus={() => setShowCityDropdown(true)}
+                  className="bg-transparent border-none focus:outline-none text-white text-xs sm:text-sm w-32 sm:w-40 md:w-48 placeholder-white/50"
+                />
+                {showCityDropdown && searchQuery && (
+                  <div className="absolute top-full left-0 mt-2 w-64 sm:w-80 max-h-80 overflow-y-auto glass rounded-xl z-50">
+                    {filteredCities.length === 0 ? (
+                      <div className="p-4 text-white/60 text-sm">No se encontraron ciudades</div>
+                    ) : (
+                      filteredCities.slice(0, 20).map((city) => (
+                        <button
+                          key={city.id}
+                          onClick={() => handleLocationChange(city.name)}
+                          className="w-full text-left px-4 py-2 text-white hover:bg-white/20 transition text-sm"
+                        >
+                          {city.name}, {city.department}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
             {user ? (
               <button
