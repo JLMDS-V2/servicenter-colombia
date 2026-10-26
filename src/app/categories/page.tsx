@@ -69,7 +69,7 @@ export default function CategoriesPage() {
             onClick={() => router.push('/')}
             className="flex items-center gap-2 text-white hover:text-white/80 transition"
           >
-            <Home className="w-5 h-5 sm:w-6 sm:h-6" />
+            <img src="/icon.png" alt="ServiCenter" className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="font-semibold text-sm sm:text-base">ServiCenter</span>
           </button>
           <div className="flex items-center gap-2 sm:gap-4">
