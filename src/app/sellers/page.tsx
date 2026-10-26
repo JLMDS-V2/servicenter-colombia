@@ -16,12 +16,26 @@ function SellersContent() {
 
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    checkUser();
     if (category) {
       fetchSellers();
     }
   }, [category, userCity]);
+
+  const checkUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+      setUser(userData);
+    }
+  };
 
   const fetchSellers = async () => {
     setLoading(true);
@@ -156,11 +170,13 @@ function SellersContent() {
                   </span>
                 </div>
 
-                {/* Description - with blur */}
+                {/* Description - with blur only if not authenticated */}
                 {seller.description && (
                   <div className="relative mb-3 sm:mb-4">
-                    <div className="absolute inset-0 backdrop-blur-xl bg-black/70 z-10 rounded"></div>
-                    <p className="text-white/80 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 opacity-25">
+                    {!user && (
+                      <div className="absolute inset-0 backdrop-blur-xl bg-black/70 z-10 rounded"></div>
+                    )}
+                    <p className={`text-white/80 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 ${!user ? 'opacity-25' : ''}`}>
                       {seller.description}
                     </p>
                   </div>
