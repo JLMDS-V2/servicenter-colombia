@@ -64,6 +64,9 @@ function AuthContent() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="liquid-glass rounded-3xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <img src="/icon.png" alt="ServiCenter" className="w-12 h-12" />
+          </div>
           <h1 className="text-3xl font-bold text-white mb-2">
             {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
           </h1>

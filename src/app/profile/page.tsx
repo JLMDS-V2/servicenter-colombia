@@ -118,6 +118,7 @@ export default function ProfilePage() {
             >
               <ArrowLeft className="w-6 h-6" />
             </button>
+            <img src="/icon.png" alt="ServiCenter" className="w-6 h-6" />
             <h1 className="text-xl font-bold text-white">Mi Perfil</h1>
           </div>
           <button

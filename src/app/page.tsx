@@ -49,7 +49,7 @@ export default function HomePage() {
       <header className="liquid-glass sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
           <div className="flex items-center gap-2">
-            <Home className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+            <img src="/icon.png" alt="ServiCenter" className="w-7 h-7 sm:w-8 sm:h-8" />
             <h1 className="text-xl sm:text-2xl font-bold text-white">ServiCenter</h1>
           </div>
           {user ? (
