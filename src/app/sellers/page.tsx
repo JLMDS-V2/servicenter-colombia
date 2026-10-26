@@ -23,7 +23,11 @@ function SellersContent() {
 
   const fetchUserCity = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
+    // Prioridad: localStorage > user data > URL params
+    const savedCity = localStorage.getItem('selectedCity');
+    if (savedCity) {
+      setUserCity(savedCity);
+    } else if (session?.user) {
       const { data: userData } = await supabase
         .from('users')
         .select('city')

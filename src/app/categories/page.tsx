@@ -16,6 +16,11 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     checkUser();
+    // Load saved location from localStorage
+    const savedCity = localStorage.getItem('selectedCity');
+    if (savedCity) {
+      setUserCity(savedCity);
+    }
   }, []);
 
   const checkUser = async () => {
@@ -42,6 +47,7 @@ export default function CategoriesPage() {
 
   const handleLocationChange = async (newCity: string) => {
     setUserCity(newCity);
+    localStorage.setItem('selectedCity', newCity);
     setShowCityDropdown(false);
     if (user) {
       await supabase
@@ -105,7 +111,7 @@ export default function CategoriesPage() {
 
       {/* City Dropdown - positioned outside header to avoid clipping */}
       {showCityDropdown && searchQuery && (
-        <div className="fixed top-16 right-4 w-64 sm:w-80 max-h-96 overflow-y-auto glass rounded-xl z-[9999]">
+        <div className="fixed top-16 left-4 sm:left-auto sm:right-4 w-64 sm:w-80 max-h-96 overflow-y-auto glass rounded-xl z-[9999]">
           {filteredCities.length === 0 ? (
             <div className="p-4 text-white/60 text-sm">No se encontraron ciudades</div>
           ) : (
