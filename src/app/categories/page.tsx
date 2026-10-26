@@ -6,22 +6,18 @@ import { supabase } from '@/lib/supabase';
 import { categories, citiesColombia } from '@/lib/data';
 import { User } from '@/types';
 import { Home, MapPin, LogOut, Search } from 'lucide-react';
+import { useLocation } from '@/contexts/LocationContext';
 
 export default function CategoriesPage() {
   const router = useRouter();
+  const { userCity, setUserCity } = useLocation();
   const [user, setUser] = useState<User | null>(null);
-  const [userCity, setUserCity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
 
   useEffect(() => {
     checkUser();
-    // Load saved location from localStorage
-    const savedCity = localStorage.getItem('selectedCity');
-    if (savedCity) {
-      setUserCity(savedCity);
-    }
   }, []);
 
   const checkUser = async () => {
@@ -49,7 +45,6 @@ export default function CategoriesPage() {
   const handleLocationChange = async (newCity: string) => {
     setLocationLoading(true);
     setUserCity(newCity);
-    localStorage.setItem('selectedCity', newCity);
     setTimeout(() => setLocationLoading(false), 500);
     setShowCityDropdown(false);
     if (user) {

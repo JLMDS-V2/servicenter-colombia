@@ -5,52 +5,23 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Seller, Review } from '@/types';
 import { Star, MessageCircle, Phone, CheckCircle, Shield, ArrowLeft, MapPin } from 'lucide-react';
+import { useLocation } from '@/contexts/LocationContext';
 
 function SellersContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams.get('category') || '';
   const categoryName = searchParams.get('name') || 'Categoría';
+  const { userCity } = useLocation();
 
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userCity, setUserCity] = useState('');
-
-  useEffect(() => {
-    fetchUserCity();
-  }, []);
 
   useEffect(() => {
     if (category) {
       fetchSellers();
     }
   }, [category, userCity]);
-
-  const fetchUserCity = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    // Prioridad: localStorage > URL params > user data
-    const savedCity = localStorage.getItem('selectedCity');
-    const urlCity = searchParams.get('city');
-    
-    if (savedCity) {
-      setUserCity(savedCity);
-      console.log('Usando ciudad de localStorage:', savedCity);
-    } else if (urlCity) {
-      setUserCity(urlCity);
-      console.log('Usando ciudad de URL:', urlCity);
-    } else if (session?.user) {
-      const { data: userData } = await supabase
-        .from('users')
-        .select('city')
-        .eq('id', session.user.id)
-        .single();
-      setUserCity(userData?.city || '');
-      console.log('Usando ciudad de usuario:', userData?.city);
-    } else {
-      setUserCity('');
-      console.log('Sin ciudad seleccionada');
-    }
-  };
 
   // Refetch sellers when userCity changes
   useEffect(() => {
