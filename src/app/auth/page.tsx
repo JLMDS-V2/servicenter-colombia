@@ -26,8 +26,26 @@ function AuthContent() {
 
     try {
       if (isLogin) {
+        // Verificar si es username o email
+        let loginEmail = email;
+        
+        // Si no tiene @, asumir que es username y buscar el email en la base de datos
+        if (!email.includes('@')) {
+          const { data: userData } = await supabase
+            .from('users')
+            .select('email')
+            .eq('username', email)
+            .single();
+          
+          if (userData?.email) {
+            loginEmail = userData.email;
+          } else {
+            throw new Error('Usuario no encontrado');
+          }
+        }
+
         const { data, error } = await supabase.auth.signInWithPassword({
-          email,
+          email: loginEmail,
           password,
         });
 
@@ -35,8 +53,11 @@ function AuthContent() {
 
         router.push(redirectPath);
       } else {
+        // Si no hay email, generar uno temporal basado en el username
+        const signupEmail = email || `${username}@temp.servicenter.local`;
+        
         const { data, error } = await supabase.auth.signUp({
-          email,
+          email: signupEmail,
           password,
           options: {
             data: {
