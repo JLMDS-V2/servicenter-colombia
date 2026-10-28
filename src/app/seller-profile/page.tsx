@@ -434,7 +434,7 @@ function SellerProfileContent() {
                   {/* Replies */}
                   {review.replies && review.replies.length > 0 && (
                     <div className="mt-4 ml-4 space-y-3 border-l-2 border-white/20 pl-4">
-                      {review.replies.map((reply) => (
+                      {review.replies.map((reply: any) => (
                         <div key={reply.id} className="p-3 glass rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="font-semibold text-white text-sm">
