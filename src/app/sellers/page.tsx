@@ -16,26 +16,12 @@ function SellersContent() {
 
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    checkUser();
     if (category) {
       fetchSellers();
     }
   }, [category, userCity]);
-
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      const { data: userData } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-      setUser(userData);
-    }
-  };
 
   const fetchSellers = async () => {
     setLoading(true);
@@ -113,7 +99,6 @@ function SellersContent() {
           >
             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
-          <img src="/icon.png" alt="ServiCenter" className="w-5 h-5 sm:w-6 sm:h-6" />
           <h1 className="text-lg sm:text-xl font-bold text-white truncate">
             {categoryName} en {userCity || 'Colombia'}
           </h1>
@@ -135,11 +120,7 @@ function SellersContent() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {sellers.map((seller) => (
-              <div 
-                key={seller.id} 
-                className="liquid-glass rounded-2xl p-4 sm:p-6 relative overflow-hidden cursor-pointer hover:scale-105 transition-transform"
-                onClick={() => router.push(`/seller-profile?id=${seller.id}`)}
-              >
+              <div key={seller.id} className="liquid-glass rounded-2xl p-4 sm:p-6 relative overflow-hidden">
                 {/* Header - visible without blur */}
                 <div className="flex items-start justify-between mb-3 sm:mb-4 relative z-20">
                   <div className="flex items-center gap-2 sm:gap-3">
@@ -174,13 +155,11 @@ function SellersContent() {
                   </span>
                 </div>
 
-                {/* Description - with blur only if not authenticated */}
+                {/* Description - with blur */}
                 {seller.description && (
                   <div className="relative mb-3 sm:mb-4">
-                    {!user && (
-                      <div className="absolute inset-0 backdrop-blur-xl bg-black/70 z-10 rounded"></div>
-                    )}
-                    <p className={`text-white/80 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 ${!user ? 'opacity-25' : ''}`}>
+                    <div className="absolute inset-0 backdrop-blur-xl bg-black/70 z-10 rounded"></div>
+                    <p className="text-white/80 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 opacity-25">
                       {seller.description}
                     </p>
                   </div>
