@@ -14,6 +14,7 @@ function AuthContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [city, setCity] = useState('');
+  const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -40,6 +41,7 @@ function AuthContent() {
             data: {
               role: 'user',
               city: city,
+              username: username,
             },
           },
         });
@@ -76,6 +78,21 @@ function AuthContent() {
         </div>
 
         <form onSubmit={handleAuth} className="space-y-6">
+          <div>
+            <label className="block text-white mb-2 flex items-center gap-2">
+              <User className="w-4 h-4" />
+              Nombre de Usuario
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required={!isLogin}
+              className="w-full px-4 py-3 rounded-xl glass text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+              placeholder="Tu nombre de usuario"
+            />
+          </div>
+
           <div>
             <label className="block text-white mb-2 flex items-center gap-2">
               <User className="w-4 h-4" />
