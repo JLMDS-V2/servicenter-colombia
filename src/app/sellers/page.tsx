@@ -120,7 +120,11 @@ function SellersContent() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {sellers.map((seller) => (
-              <div key={seller.id} className="liquid-glass rounded-2xl p-4 sm:p-6 relative overflow-hidden">
+              <div 
+                key={seller.id} 
+                className="liquid-glass rounded-2xl p-4 sm:p-6 relative overflow-hidden cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => router.push(`/seller-profile?id=${seller.id}`)}
+              >
                 {/* Header - visible without blur */}
                 <div className="flex items-start justify-between mb-3 sm:mb-4 relative z-20">
                   <div className="flex items-center gap-2 sm:gap-3">
