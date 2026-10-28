@@ -17,6 +17,7 @@ function AuthContent() {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showEmailWarning, setShowEmailWarning] = useState(false);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,20 +94,46 @@ function AuthContent() {
             />
           </div>
 
-          <div>
-            <label className="block text-white mb-2 flex items-center gap-2">
-              <User className="w-4 h-4" />
-              Correo Electrónico
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-xl glass text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-              placeholder="tu@email.com"
-            />
-          </div>
+          {!isLogin && (
+            <div>
+              <label className="block text-white mb-2 flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Correo Electrónico (Opcional)
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setShowEmailWarning(e.target.value === '');
+                }}
+                className="w-full px-4 py-3 rounded-xl glass text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+                placeholder="tu@email.com"
+              />
+              {showEmailWarning && (
+                <p className="text-yellow-400 text-xs mt-1">
+                  ⚠️ Si no pones correo, tienes la posibilidad de perder la cuenta
+                </p>
+              )}
+            </div>
+          )}
+
+          {isLogin && (
+            <div>
+              <label className="block text-white mb-2 flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Correo Electrónico
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-xl glass text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+                placeholder="tu@email.com"
+              />
+            </div>
+          )}
 
           <div>
             <label className="block text-white mb-2 flex items-center gap-2">
