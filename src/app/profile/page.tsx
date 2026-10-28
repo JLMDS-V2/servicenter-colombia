@@ -77,9 +77,9 @@ export default function ProfilePage() {
       if (error) throw error;
 
       alert('Perfil actualizado exitosamente');
-      // Si el usuario se acaba de registrar como vendedor, redirigir a la página de categorías
-      if (user.role === 'seller' && selectedCategories.length > 0) {
-        router.push('/categories');
+      // Si el usuario es vendedor, redirigir al dashboard de vendedor
+      if (user.role === 'seller') {
+        router.push('/seller-dashboard');
       }
     } catch (err) {
       console.error('Error saving profile:', err);
