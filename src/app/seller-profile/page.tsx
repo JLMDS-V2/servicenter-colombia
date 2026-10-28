@@ -16,6 +16,8 @@ function SellerProfileContent() {
   const [user, setUser] = useState<any>(null);
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
 
   useEffect(() => {
     checkUser();
@@ -55,14 +57,26 @@ function SellerProfileContent() {
   const fetchReviews = async () => {
     const { data, error } = await supabase
       .from('reviews')
-      .select('*, users(full_name)')
+      .select('*, users(full_name, username, service_confirmed)')
       .eq('seller_id', sellerId)
+      .is('parent_id', null)
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching reviews:', error);
     } else {
-      setReviews(data || []);
+      // Fetch replies for each review
+      const reviewsWithReplies = await Promise.all(
+        (data || []).map(async (review) => {
+          const { data: replies } = await supabase
+            .from('reviews')
+            .select('*, users(full_name, username, service_confirmed)')
+            .eq('parent_id', review.id)
+            .order('created_at', { ascending: true });
+          return { ...review, replies: replies || [] };
+        })
+      );
+      setReviews(reviewsWithReplies);
     }
   };
 
@@ -91,6 +105,42 @@ function SellerProfileContent() {
     } catch (err) {
       console.error('Error submitting review:', err);
       alert('Error al enviar la reseña');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const submitReply = async (parentId: string) => {
+    if (!user) {
+      alert('Debes iniciar sesión para responder');
+      return;
+    }
+
+    if (!replyText.trim()) {
+      alert('Escribe tu respuesta');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .insert({
+          seller_id: sellerId,
+          user_id: user.id,
+          parent_id: parentId,
+          comment: replyText,
+        });
+
+      if (error) throw error;
+
+      alert('Respuesta enviada exitosamente');
+      setReplyText('');
+      setReplyingTo(null);
+      fetchReviews();
+    } catch (err) {
+      console.error('Error submitting reply:', err);
+      alert('Error al enviar la respuesta');
     } finally {
       setSubmitting(false);
     }
@@ -139,6 +189,45 @@ function SellerProfileContent() {
         <div className="liquid-glass rounded-2xl p-8 text-center">
           <p className="text-white">Vendedor no encontrado</p>
         </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen">
+        {/* Header */}
+        <header className="liquid-glass sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center gap-3 sm:gap-4">
+            <button
+              onClick={() => router.back()}
+              className="text-white hover:text-white/80 transition"
+            >
+              <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+            <h1 className="text-lg sm:text-xl font-bold text-white truncate">
+              Perfil de {seller.full_name}
+            </h1>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="container mx-auto px-4 py-8 sm:py-12">
+          <div className="liquid-glass rounded-2xl p-8 sm:p-12 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+              Inicia sesión para ver el perfil completo
+            </h2>
+            <p className="text-white/70 mb-6">
+              Necesitas iniciar sesión para ver el perfil del vendedor, contactarlo, ver reseñas y dejar comentarios.
+            </p>
+            <button
+              onClick={() => router.push(`/auth?redirect=/seller-profile?id=${sellerId}`)}
+              className="glass-strong px-6 py-3 rounded-lg text-white hover:bg-white/30 transition"
+            >
+              Iniciar Sesión
+            </button>
+          </div>
+        </main>
       </div>
     );
   }
@@ -285,17 +374,86 @@ function SellerProfileContent() {
               {reviews.map((review) => (
                 <div key={review.id} className="p-4 glass rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold text-white">
-                      {review.users?.full_name || 'Usuario'}
-                    </span>
-                    <div className="flex">
-                      {renderStars(review.rating)}
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-white">
+                        {review.users?.username || review.users?.full_name || 'Usuario'}
+                      </span>
+                      {review.users?.service_confirmed && (
+                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">
+                          ✓ Servicio contratado
+                        </span>
+                      )}
                     </div>
+                    {review.rating && (
+                      <div className="flex">
+                        {renderStars(review.rating)}
+                      </div>
+                    )}
                   </div>
-                  <p className="text-white/80 text-sm">{review.comment}</p>
-                  <p className="text-white/40 text-xs mt-2">
-                    {new Date(review.created_at).toLocaleDateString('es-ES')}
-                  </p>
+                  <p className="text-white/80 text-sm mb-2">{review.comment}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-white/40 text-xs">
+                      {new Date(review.created_at).toLocaleDateString('es-ES')}
+                    </p>
+                    <button
+                      onClick={() => setReplyingTo(review.id)}
+                      className="text-white/60 text-xs hover:text-white transition"
+                    >
+                      Responder
+                    </button>
+                  </div>
+
+                  {/* Reply Form */}
+                  {replyingTo === review.id && (
+                    <div className="mt-4 p-3 glass rounded-lg">
+                      <textarea
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        placeholder="Escribe tu respuesta..."
+                        className="w-full p-2 rounded-lg bg-white/10 text-white border border-white/20 focus:border-white/40 outline-none resize-none text-sm"
+                        rows={2}
+                      />
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          onClick={() => submitReply(review.id)}
+                          disabled={submitting}
+                          className="glass px-3 py-1 rounded-lg text-white text-sm hover:bg-white/20 transition disabled:opacity-50"
+                        >
+                          {submitting ? 'Enviando...' : 'Enviar'}
+                        </button>
+                        <button
+                          onClick={() => setReplyingTo(null)}
+                          className="glass px-3 py-1 rounded-lg text-white text-sm hover:bg-white/20 transition"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Replies */}
+                  {review.replies && review.replies.length > 0 && (
+                    <div className="mt-4 ml-4 space-y-3 border-l-2 border-white/20 pl-4">
+                      {review.replies.map((reply) => (
+                        <div key={reply.id} className="p-3 glass rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="font-semibold text-white text-sm">
+                              {reply.users?.username || reply.users?.full_name || 'Usuario'}
+                            </span>
+                            {reply.users?.service_confirmed && (
+                              <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">
+                                ✓ Servicio contratado
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-white/80 text-sm">{reply.comment}</p>
+                          <p className="text-white/40 text-xs mt-1">
+                            {new Date(reply.created_at).toLocaleDateString('es-ES')}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
