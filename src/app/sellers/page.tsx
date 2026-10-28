@@ -20,9 +20,6 @@ function SellersContent() {
 
   useEffect(() => {
     checkUser();
-  }, []);
-
-  useEffect(() => {
     if (category) {
       fetchSellers();
     }
