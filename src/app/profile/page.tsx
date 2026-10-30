@@ -62,7 +62,14 @@ export default function ProfilePage() {
         city: city,
       };
 
-      if (user.role === 'seller') {
+      // Si el usuario seleccionó categorías, convertirse en vendedor
+      if (selectedCategories.length > 0 && user.role !== 'seller') {
+        updateData.role = 'seller';
+        updateData.description = description;
+        updateData.whatsapp = whatsapp;
+        updateData.preferred_contact = preferredContact;
+        updateData.categories = selectedCategories;
+      } else if (user.role === 'seller') {
         updateData.description = description;
         updateData.whatsapp = whatsapp;
         updateData.preferred_contact = preferredContact;
@@ -77,8 +84,9 @@ export default function ProfilePage() {
       if (error) throw error;
 
       alert('Perfil actualizado exitosamente');
-      // Si el usuario es vendedor, redirigir al dashboard de vendedor
-      if (user.role === 'seller') {
+
+      // Si el usuario se acaba de convertir en vendedor o ya es vendedor, redirigir al dashboard
+      if (selectedCategories.length > 0 || user.role === 'seller') {
         router.push('/seller-dashboard');
       }
     } catch (err) {

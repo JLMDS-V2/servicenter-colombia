@@ -67,7 +67,7 @@ function AuthContent() {
       } else {
         // Si no hay email, generar uno temporal basado en el username
         const signupEmail = email || `${username}@temp.servicenter.local`;
-        
+
         const { data, error } = await supabase.auth.signUp({
           email: signupEmail,
           password,
@@ -83,6 +83,20 @@ function AuthContent() {
         if (error) throw error;
 
         if (data.user) {
+          // Crear fila en public.users
+          const { error: userError } = await supabase
+            .from('users')
+            .insert({
+              id: data.user.id,
+              email: signupEmail,
+              role: 'user',
+              city: city,
+              username: username,
+              full_name: username,
+            });
+
+          if (userError) throw userError;
+
           await new Promise(resolve => setTimeout(resolve, 500));
           router.push(redirectPath);
         } else {
