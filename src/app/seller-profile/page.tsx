@@ -89,20 +89,26 @@ function SellerProfileContent() {
 
     setSubmitting(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('reviews')
         .insert({
           seller_id: sellerId,
           user_id: user.id,
           rating: newReview.rating,
           comment: newReview.comment,
-        });
+        })
+        .select('*, users(full_name, username)')
+        .single();
 
       if (error) throw error;
 
+      // Agregar la nueva reseña al estado local inmediatamente
+      if (data) {
+        setReviews([{ ...data, replies: [] }, ...reviews]);
+      }
+
       alert('Reseña enviada exitosamente');
       setNewReview({ rating: 5, comment: '' });
-      fetchReviews();
     } catch (err) {
       console.error('Error submitting review:', err);
       alert('Error al enviar la reseña');

@@ -83,6 +83,9 @@ export default function HomePage() {
           <p className="text-lg sm:text-xl text-white/80 mb-6 sm:mb-8 break-words px-2">
             Electricistas, plomeros, cerrajeros y más expertos del hogar en Colombia
           </p>
+          <p className="text-base sm:text-lg text-white/70 mb-6 sm:mb-8 break-words px-2 max-w-3xl mx-auto">
+            ServiCenter es una plataforma innovadora que conecta profesionales del hogar con clientes en toda Colombia. Proyecto creado por Julian Vargas, Keissley Parada y Michael Romero con el objetivo de facilitar la búsqueda de servicios de confianza de manera segura y eficiente. Nuestra misión es conectar a Colombianos con profesionales verificados, calificados y listos para ofrecer servicios de calidad.
+          </p>
           <button
             onClick={() => router.push('/categories')}
             className="glass-strong px-6 py-3 sm:px-8 sm:py-4 rounded-xl text-white text-base sm:text-lg font-semibold hover:bg-white/30 transition"
@@ -146,8 +149,11 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="liquid-glass mt-12 sm:mt-16">
         <div className="container mx-auto px-4 py-6 sm:py-8 text-center">
-          <p className="text-white/70 text-sm sm:text-base">
+          <p className="text-white/70 text-sm sm:text-base mb-2">
             © 2024 ServiCenter Colombia. Todos los derechos reservados.
+          </p>
+          <p className="text-white/50 text-xs sm:text-sm">
+            Proyecto creado por Julian Vargas, Keissley Parada y Michael Romero
           </p>
         </div>
       </footer>

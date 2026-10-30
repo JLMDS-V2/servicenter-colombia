@@ -52,7 +52,18 @@ function AuthContent() {
 
         if (error) throw error;
 
-        router.push(redirectPath);
+        // Verificar el rol del usuario y redirigir al dashboard correspondiente
+        const { data: userData } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+
+        if (userData?.role === 'seller') {
+          router.push('/seller-dashboard');
+        } else {
+          router.push(redirectPath);
+        }
       } else {
         // Si no hay email, generar uno temporal basado en el username
         const signupEmail = email || `${username}@temp.servicenter.local`;
