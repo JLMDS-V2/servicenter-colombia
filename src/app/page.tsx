@@ -149,11 +149,8 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="liquid-glass mt-12 sm:mt-16">
         <div className="container mx-auto px-4 py-6 sm:py-8 text-center">
-          <p className="text-white/70 text-sm sm:text-base mb-2">
-            © 2024 ServiCenter Colombia. Todos los derechos reservados.
-          </p>
-          <p className="text-white/50 text-xs sm:text-sm">
-            Proyecto creado por Julian Vargas, Keissley Parada y Michael Romero
+          <p className="text-white/70 text-sm sm:text-base">
+            C 2026 ALL RIGTHS RESERVERD JULIA, KEI, MICHAEL
           </p>
         </div>
       </footer>
