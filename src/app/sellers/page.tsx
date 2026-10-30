@@ -16,6 +16,23 @@ function SellersContent() {
 
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Verificar si el usuario está autenticado
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+    };
+    checkUser();
+
+    // Escuchar cambios de autenticación
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (category) {
@@ -54,8 +71,7 @@ function SellersContent() {
   };
 
   const openChat = async (sellerId: string) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    if (!user) {
       router.push(`/auth?redirect=/sellers?category=${category}&name=${encodeURIComponent(categoryName)}&city=${userCity}&message=${encodeURIComponent('Inicia sesión para contactar al vendedor')}`);
       return;
     }
@@ -159,11 +175,13 @@ function SellersContent() {
                   </span>
                 </div>
 
-                {/* Description - with blur */}
+                {/* Description - with blur only if not authenticated */}
                 {seller.description && (
                   <div className="relative mb-3 sm:mb-4">
-                    <div className="absolute inset-0 backdrop-blur-xl bg-black/70 z-10 rounded"></div>
-                    <p className="text-white/80 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 opacity-25">
+                    {!user && (
+                      <div className="absolute inset-0 backdrop-blur-xl bg-white/30 z-10 rounded"></div>
+                    )}
+                    <p className={`text-white/80 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 ${!user ? 'opacity-25' : ''}`}>
                       {seller.description}
                     </p>
                   </div>

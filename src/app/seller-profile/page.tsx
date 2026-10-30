@@ -57,20 +57,21 @@ function SellerProfileContent() {
   const fetchReviews = async () => {
     const { data, error } = await supabase
       .from('reviews')
-      .select('*, users(full_name, username, service_confirmed)')
+      .select('*, users(full_name, username)')
       .eq('seller_id', sellerId)
       .is('parent_id', null)
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching reviews:', error);
+      setReviews([]);
     } else {
       // Fetch replies for each review
       const reviewsWithReplies = await Promise.all(
         (data || []).map(async (review) => {
           const { data: replies } = await supabase
             .from('reviews')
-            .select('*, users(full_name, username, service_confirmed)')
+            .select('*, users(full_name, username)')
             .eq('parent_id', review.id)
             .order('created_at', { ascending: true });
           return { ...review, replies: replies || [] };
@@ -158,6 +159,12 @@ function SellerProfileContent() {
     if (seller?.whatsapp) {
       window.open(`https://wa.me/${seller.whatsapp}`, '_blank');
     }
+  };
+
+  const calculateAverageRating = () => {
+    if (reviews.length === 0) return 0;
+    const total = reviews.reduce((sum, review) => sum + (review.rating || 0), 0);
+    return Math.round(total / reviews.length);
   };
 
   const renderStars = (rating: number) => {
@@ -275,10 +282,10 @@ function SellerProfileContent() {
               </div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex">
-                  {renderStars(Math.round(seller.rating || 0))}
+                  {renderStars(calculateAverageRating())}
                 </div>
                 <span className="text-white/70">
-                  ({seller.review_count || 0} reseñas)
+                  ({reviews.length} reseñas)
                 </span>
               </div>
             </div>

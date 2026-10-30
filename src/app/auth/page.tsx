@@ -11,6 +11,7 @@ function AuthContent() {
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get('redirect') || '/categories';
   const [isLogin, setIsLogin] = useState(true);
+  const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [city, setCity] = useState('');
@@ -27,16 +28,16 @@ function AuthContent() {
     try {
       if (isLogin) {
         // Verificar si es username o email
-        let loginEmail = email;
-        
+        let loginEmail = identifier;
+
         // Si no tiene @, asumir que es username y buscar el email en la base de datos
-        if (!email.includes('@')) {
+        if (!identifier.includes('@')) {
           const { data: userData } = await supabase
             .from('users')
             .select('email')
-            .eq('username', email)
+            .eq('username', identifier)
             .single();
-          
+
           if (userData?.email) {
             loginEmail = userData.email;
           } else {
@@ -143,15 +144,15 @@ function AuthContent() {
             <div>
               <label className="block text-white mb-2 flex items-center gap-2">
                 <User className="w-4 h-4" />
-                Correo Electrónico
+                Nombre de usuario o Email
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
                 className="w-full px-4 py-3 rounded-xl glass text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-                placeholder="tu@email.com"
+                placeholder="Nombre de usuario o email"
               />
             </div>
           )}
