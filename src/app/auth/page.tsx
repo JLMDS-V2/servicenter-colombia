@@ -83,16 +83,18 @@ function AuthContent() {
         if (error) throw error;
 
         if (data.user) {
-          // Crear fila en public.users
+          // Crear fila en public.users usando upsert para evitar duplicados
           const { error: userError } = await supabase
             .from('users')
-            .insert({
+            .upsert({
               id: data.user.id,
               email: signupEmail,
               role: 'user',
               city: city,
               username: username,
               full_name: username,
+            }, {
+              onConflict: 'id'
             });
 
           if (userError) throw userError;

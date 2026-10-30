@@ -152,6 +152,14 @@ export default function HomePage() {
           <p className="text-white/70 text-sm sm:text-base">
             © 2026 ALL RIGTHS RESERVERD JULIAN, KEI, MICHAEL ©
           </p>
+          {user?.role === 'seller' && (
+            <button
+              onClick={() => router.push('/seller-dashboard')}
+              className="mt-4 glass px-4 py-2 rounded-lg text-white hover:bg-white/20 transition text-sm"
+            >
+              Ir al panel de vendedor
+            </button>
+          )}
         </div>
       </footer>
     </div>
